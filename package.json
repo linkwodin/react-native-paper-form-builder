@@ -40,5 +40,7 @@
     "tsc": "^1.20150623.0",
     "typescript": "^3.9.7"
   },
-  "dependencies": {}
+  "dependencies": {
+    "react-build-dist": "0.0.8"
+  }
 }

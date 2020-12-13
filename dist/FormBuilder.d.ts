@@ -16,6 +16,7 @@ export declare type FormConfigType = {
     label?: string | React.ReactNode;
     rules?: ValidationOptions;
     textInputProps?: React.ComponentProps<typeof TextInput>;
+    createTag?: React.ReactNode;
 };
 export declare type FormConfigArrayType = Array<Without<FormConfigType, 'handleSubmit'>>;
 declare type FormBuilderPropType = {

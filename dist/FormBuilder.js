@@ -26,6 +26,9 @@ function FormBuilder(props) {
             propsInput.watch = form.watch;
             propsInput.triggerValidation = form.triggerValidation || form.trigger;
             propsInput.loadOptions = input.loadOptions;
+            if (input.type === 'autocomplete') {
+                propsInput.createTag = input.createTag;
+            }
         }
         if (input.type === 'checkbox' ||
             input.type === 'radio' ||
@@ -146,7 +149,7 @@ function AppDropdown(props) {
 }
 function AppAutocomplete(props) {
     const { colors } = useTheme();
-    const { mode, options, setValue, name, watch, triggerValidation, label, Input, disabled, loadOptions, } = props;
+    const { mode, options, setValue, name, watch, triggerValidation, label, Input, disabled, loadOptions, createTag } = props;
     const [displayValue, setDisplayValue] = useState('');
     const [searchValue, setSearchValue] = useState('');
     const [showDropdown, setShowDropdown] = useState(false);
@@ -159,11 +162,16 @@ function AppAutocomplete(props) {
             triggerValidation(name);
         }
         const activeOption = options.find((option) => option.value === watch(name));
-        setDisplayValue(activeOption?.label);
+        setDisplayValue(activeOption != null ? activeOption?.label : watch(name));
     }, [watch(name)]);
     useEffect(() => {
         if (searchValue.trim()) {
-            setFilteredOptions([...options].filter((option) => option.label.toLowerCase().indexOf(searchValue.toLowerCase()) !==
+            let editableOption = options.slice();
+            const activeOption = options.find((option) => option.value === searchValue.trim().toLowerCase());
+            if (createTag != undefined && (activeOption == undefined)) {
+                editableOption.push({ value: searchValue.trim().toLowerCase(), label: searchValue, isNew: true });
+            }
+            setFilteredOptions([...editableOption].filter((option) => option.label.toLowerCase().indexOf(searchValue.trim().toLowerCase()) !==
                 -1));
         }
         else {
@@ -208,7 +216,7 @@ function AppAutocomplete(props) {
             ? colors.primary
             : undefined,
     }}>
-                          {item.label}
+                          {item.label} {(item.isNew && createTag)}
                         </Subheading>}/>
                     <Divider />
                   </Fragment>
